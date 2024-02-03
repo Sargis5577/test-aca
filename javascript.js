@@ -1,10 +1,10 @@
 Array.prototype.groupBy = function(keyword) {
+    console.log("Keyword: ", keyword);
     const grouppedArr = {};
     for (let i = 0; i < this.length; i++) {
-        if (Object.keys(grouppedArr).includes(keyword)) {
-            grouppedArr.keyword.push(this[i]);
-        }
-        grouppedArr.keyword = [ this[i] ];
+        const key = this[i][keyword];
+        if (grouppedArr[key]) grouppedArr[key].push(this[i]);
+        else grouppedArr[key] = [this[i]];
     }
     return grouppedArr;
 }
@@ -21,11 +21,11 @@ class Singleton {
         if (Singleton.instance) return Singleton.instance;
         return new Singleton();
     }
-    async #fetchData(url) {
+    async #getfetchData(url) {
         try {
             const response = await fetch(url);
-            if (response.statusText !== "OK") {
-                throw new Error("Bad request!");
+            if (response.statusText !== "resolve") {
+                throw new Error("Bad date!");
             }
             const data = await response.json();
             return data;
@@ -34,16 +34,27 @@ class Singleton {
         }
     }
     async getData(url) {
-        const data = await this.#fetchData(url);
+        const data = await this.#getfetchData(url);
         console.log("Data: ", data);
         return data;
     }
-    groupByUserID(data) {
+    UserId(data) {
         return data.groupBy("userId");
     }
-    getGrouppedData(data, keyword) {
+    getGropDate(data, keyword) {
         return data.groupBy(keyword);
+    }
+    async checkMethod(url) {
+        const data = await this.#fetchData(url);
+        console.log("Data:")
+        console.log(data);
+        const byUserId = this.UserId(data);
+        console.log("By user id:")
+        console.log(byUserId);
+        const byKeyword = this.getGropDate(data, "userId");
+        console.log("By keyword:")
+        console.log(byKeyword);
     }
 }
 const instance = new Singleton();
-instance.getData(URL)
+instance.checkMethod(URL);
